@@ -1,15 +1,35 @@
-# Slope-Game
-Copy of the popular slope game designed to be hosted through https://repl.it, however can be done locally or on a server. Fork the github through repl, or just check it out [here](https://replit.com/@cgolden15/Slope-Game?v=1)! Run the 
+# Slope Game
+Copy of the popular slope game designed to be hosted anywhere to bypass school blocks! Below I will cover two free and easy methods to clone and host this yourself, however if you wish to play, use either of the following links.
 
++ [Hosted through Github Pages](https://github.com/cgolden15/Slope-Game)
++ [Hosted through repl.it](https://replit.com/@cgolden15/Slope-Game)
 ## How to use:
+- Using [repl.it](https://repl.it/) is the best free, easy way to host and edit this page, however takes longer to set up.
+- Using github pages is probably the simplest(and free!) method, however may be blocked on some computers due to the .io ending of the default urls.
+
 ### On repl.it
-Fork this github through repl.it and use `node unityloader41.js` as your run command. If not prompted to enter a run command, create a ".replit" file and paste `run = "node unityloader41.js"` and `language = "html"` into it. Then just run the repl and enjoy!
+Fork this Repo through repl.it and use `node unityloader41.js` as your run command. If not prompted to enter a run command, create a ".replit" file and paste `run = "node unityloader41.js"` and `language = "html"` into it. Then just run the repl and enjoy!
 
 ![image](https://user-images.githubusercontent.com/61284764/153868233-76847dcb-4544-49a8-8027-64dcff0f93c2.png)
 |:--:|
 | <b>Should look like this when completed.</b>|
 
-### Hosting Locally
+[Stuck? Check out my version here!](https://replit.com/@cgolden15/Slope-Game)
+
+### On Github Pages
+Fork this repo, and open it. Open the repo settings menu and navigate down the the "Pages" tab. Once there, change the Source option to the main branch. A blue box will appear saying that your page is waiting to be published. After about 15-90 seconds, the game will be avalible to play at the url it displays.
+
+![image](https://user-images.githubusercontent.com/61284764/153872774-bf18f006-422c-44da-81b9-dcdc68c2ac4a.png)
+|:--:|
+<b>Select your deployment branch and save!</b>
+
+![image](https://user-images.githubusercontent.com/61284764/153871943-1e1b6274-a212-4600-9233-c5c19dc75fe3.png)
+|:--:|
+<b>Should look like this when completed.</b>
+
+
+
+### Other
 Fork the repo and save it to your desired location. Run it through the `unityloader41.js` file.
 
 

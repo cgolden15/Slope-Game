@@ -7,6 +7,8 @@ Copy of the popular slope game designed to be hosted anywhere to bypass school b
 - Using [repl.it](https://repl.it/) is the best free, easy way to host and edit this page, however takes longer to set up.
 - Using github pages is probably the simplest(and free!) method, however may be blocked on some computers due to the .io ending of the default urls.
 
+Instructions for both are provided below!
+
 ### On repl.it
 Fork this Repo through repl.it and use `node unityloader41.js` as your run command. If not prompted to enter a run command, create a ".replit" file and paste `run = "node unityloader41.js"` and `language = "html"` into it. Then just run the repl and enjoy!
 

@@ -1,4 +1,4 @@
-# Slope Game
+# Slope Game ![visitor badge](https://visitor-badge.glitch.me/badge?page_id=cgolden15.Slope-Game&left_text=Page%20Visits)
 Copy of the popular slope game designed to be hosted anywhere to bypass school blocks! Below I will cover two free and easy methods to clone and host this yourself, however if you wish to play, use either of the following links. If you use this repo, please star it so others can find it, and so I can see if yall want more!
 
 + [Hosted through Github Pages](https://github.com/cgolden15/Slope-Game)

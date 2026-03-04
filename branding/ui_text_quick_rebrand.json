@@ -1,0 +1,13 @@
+{
+  "note": "Keep replacement UTF-8 byte length <= source byte length.",
+  "replacements": [
+    { "from": "SLOPE LEADERBOARD", "to": "ELITE LEADERBOARD" },
+    { "from": "High Scores:(loading...)", "to": "Top Scores:(loading...)" },
+    { "from": "Total Score:", "to": "Best Score:" },
+    { "from": "Your Name:", "to": "Player:" },
+    { "from": "Personal best:", "to": "Best run:" },
+    { "from": "Recent score:", "to": "Last run:" },
+    { "from": "Register to submit", "to": "Submit to board" },
+    { "from": "MoreGamesText", "to": "PremiumGames" }
+  ]
+}

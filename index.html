@@ -1,68 +1,1015 @@
+<!DOCTYPE html>
+<html lang="en">
 <head>
-<!-- Adsense -->
-<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8024356722027062"
-     crossorigin="anonymous"></script>
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-VKK1BVCT2G"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SLOPE - Premium Edition</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@500;600;700&display=swap');
 
-  gtag('config', 'G-VKK1BVCT2G');
-</script>
-    <link rel="stylesheet" href="TemplateData/style.css">
-    <script src="TemplateData/UnityProgress.js"></script>
-    <script src="TemplateData/unityloader41.js"></script>
-    <script>
-        var gameInstance = UnityLoader.instantiate("gameContainer", "Build/slope.json", { onProgress: UnityProgress, Module: { onRuntimeInitialized: function() { UnityProgress(gameInstance, "complete") } } });
-    </script>
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2541434264715219"
-     crossorigin="anonymous"></script>
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2541434264715219"
-     crossorigin="anonymous"></script>
-    <style>
-        .alert {
-          padding: 20px;
-          background-color: #0096FF;
-          color: white;
-        }
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
-        .closebtn {
-          margin-left: 15px;
-          color: white;
-          p {text-align: center;}  
-          font-weight: bold;
-          float: right;
-          font-size: 22px;
-          line-height: 20px;
-          cursor: pointer;
-          transition: 0.3s;
-        }
+  :root {
+    --neon: #44ff44;
+    --neon-bright: #88ff88;
+    --neon-dim: #1a6b1a;
+    --dark-green: #0a2e0a;
+    --chrome-light: #e8e8e8;
+    --chrome-mid: #9a9a9a;
+    --chrome-dark: #333;
+    --gunmetal: #2a2d30;
+    --gunmetal-light: #4a4d50;
+    --gunmetal-dark: #1a1c1e;
+  }
 
-        .closebtn:hover {
-          color: black;
-        }
-    </style>
+  body {
+    margin: 0;
+    overflow: hidden;
+    background: #050505;
+    font-family: 'Rajdhani', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  .game-container {
+    position: fixed;
+    inset: 0;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    background: #0f1112;
+  }
+
+  /* === CRT SCANLINES === */
+  .scanlines {
+    position: absolute;
+    inset: 0;
+    z-index: 20;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 1px,
+      rgba(0, 0, 0, 0.15) 1px,
+      rgba(0, 0, 0, 0.15) 2px
+    );
+    pointer-events: none;
+    opacity: 0.6;
+  }
+
+  /* === BACKGROUND TEXTURE === */
+  .bg-texture {
+    position: absolute;
+    inset: -50px; /* Oversized for animation */
+    background:
+      radial-gradient(circle 1px at 4px 4px, #1e2124 1px, transparent 1px),
+      radial-gradient(circle 1px at 2px 2px, #16181a 0.5px, transparent 0.5px);
+    background-size: 6px 5px, 6px 5px;
+    z-index: 0;
+  }
+
+  /* === GREEN GRID WITH MOTION === */
+  .grid-overlay, .grid-glow-lines {
+    position: absolute;
+    inset: -100px; /* Oversized for seamless scroll */
+    z-index: 1;
+    pointer-events: none;
+    animation: gridScroll 4s linear infinite;
+  }
+  
+  .grid-overlay {
+    background:
+      repeating-linear-gradient(90deg, transparent, transparent 79px, rgba(50, 200, 50, 0.12) 79px, rgba(50, 200, 50, 0.18) 80px, rgba(50, 200, 50, 0.12) 81px, transparent 81px),
+      repeating-linear-gradient(0deg, transparent, transparent 49px, rgba(50, 200, 50, 0.10) 49px, rgba(50, 200, 50, 0.15) 50px, rgba(50, 200, 50, 0.10) 51px, transparent 51px);
+  }
+
+  .grid-glow-lines {
+    background:
+      repeating-linear-gradient(90deg, transparent, transparent 78px, rgba(40, 180, 40, 0.06) 78px, rgba(50, 200, 50, 0.15) 80px, rgba(40, 180, 40, 0.06) 82px, transparent 82px),
+      repeating-linear-gradient(0deg, transparent, transparent 48px, rgba(40, 180, 40, 0.05) 48px, rgba(50, 200, 50, 0.12) 50px, rgba(40, 180, 40, 0.05) 52px, transparent 52px);
+    filter: blur(1px);
+  }
+
+  @keyframes gridScroll {
+    0% { transform: translateY(0); }
+    100% { transform: translateY(51px); /* Matches grid vertical spacing */ }
+  }
+
+  /* === ANAMORPHIC FLARES === */
+  .flare-wrapper {
+    position: absolute;
+    top: 38%;
+    left: 0;
+    right: 0;
+    height: 50px;
+    z-index: 2;
+    pointer-events: none;
+    display: flex;
+    justify-content: space-between;
+    opacity: 0.8;
+  }
+  .flare-left, .flare-right { width: 55%; height: 100%; }
+  .flare-left { background: linear-gradient(90deg, rgba(200, 255, 200, 0.4) 0%, rgba(80, 255, 80, 0.25) 8%, rgba(50, 200, 50, 0.15) 20%, transparent 70%); }
+  .flare-right { background: linear-gradient(270deg, rgba(200, 255, 200, 0.4) 0%, rgba(80, 255, 80, 0.25) 8%, rgba(50, 200, 50, 0.15) 20%, transparent 70%); }
+  
+  .flare-band-left, .flare-band-right { position: absolute; top: 41%; width: 45%; height: 4px; z-index: 2; pointer-events: none; filter: blur(2px); }
+  .flare-band-left { left: 0; background: linear-gradient(90deg, rgba(180, 255, 180, 0.8) 0%, rgba(80, 255, 80, 0.4) 15%, transparent 50%); }
+  .flare-band-right { right: 0; background: linear-gradient(270deg, rgba(180, 255, 180, 0.8) 0%, rgba(80, 255, 80, 0.4) 15%, transparent 50%); }
+
+  /* === CENTER VIGNETTE === */
+  .vignette {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    background: radial-gradient(ellipse 70% 80% at 50% 50%, transparent 40%, rgba(0,0,0,0.6) 100%);
+    pointer-events: none;
+  }
+
+  /* === TOP PANELS === */
+  .panel-topleft, .panel-topright {
+    position: absolute;
+    top: 0;
+    z-index: 10;
+    cursor: pointer;
+    transition: filter 0.2s, transform 0.2s;
+  }
+  .panel-topleft { left: 0; transform-origin: top left; }
+  .panel-topright { right: 0; transform-origin: top right; }
+  
+  .panel-topleft:hover, .panel-topright:hover {
+    filter: brightness(1.2);
+    transform: scale(1.02);
+  }
+  .panel-topleft svg, .panel-topright svg { display: block; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.5)); }
+
+  /* === CENTER TITLE === */
+  .title-area {
+    position: absolute;
+    top: 35px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    animation: titleFloat 4s ease-in-out infinite;
+  }
+
+  @keyframes titleFloat {
+    0%, 100% { transform: translateX(-50%) translateY(0); }
+    50% { transform: translateX(-50%) translateY(-3px); }
+  }
+
+  .slope-title {
+    font-family: 'Orbitron', sans-serif;
+    font-weight: 900;
+    font-size: 76px;
+    letter-spacing: 10px;
+    margin-left: 10px; /* Offset letter spacing */
+    text-transform: uppercase;
+    position: relative;
+    display: inline-block;
+    line-height: 1;
+    color: transparent;
+    background: linear-gradient(180deg, #e0ffe0 0%, #66ee66 30%, #22aa22 65%, #0a550a 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    text-shadow:
+      0 1px 0 #0f440f,
+      0 2px 0 #0d3a0d,
+      0 3px 0 #0a300a,
+      0 4px 0 #082608,
+      0 5px 0 #061c06,
+      0 6px 0 #041204,
+      0 7px 0 #020802,
+      0 10px 15px rgba(0,0,0,0.8);
+    filter: drop-shadow(0 0 25px rgba(50, 255, 50, 0.4));
+    paint-order: stroke fill;
+    -webkit-text-stroke: 2px var(--neon-bright);
+  }
+
+  /* Title Breathing Glow */
+  .title-glow {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 80%;
+    height: 40px;
+    transform: translate(-50%, -50%);
+    background: radial-gradient(ellipse, rgba(80, 255, 80, 0.3) 0%, transparent 60%);
+    filter: blur(20px);
+    z-index: -1;
+    animation: glowPulse 2s ease-in-out infinite alternate;
+  }
+
+  @keyframes glowPulse {
+    from { opacity: 0.5; transform: translate(-50%, -50%) scale(0.9); }
+    to { opacity: 1; transform: translate(-50%, -50%) scale(1.1); }
+  }
+
+  /* === PREMIUM EDITION BADGE === */
+  .premium-badge {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 1px;
+    padding: 3px 32px;
+    height: 28px;
+    background: linear-gradient(180deg, #999 0%, #666 30%, #777 50%, #4a4a4a 70%, #222 100%);
+    clip-path: polygon(14px 0%, calc(100% - 14px) 0%, 100% 50%, calc(100% - 14px) 100%, 14px 100%, 0% 50%);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+    overflow: hidden;
+  }
+  
+  .premium-badge::before {
+    content: '';
+    position: absolute;
+    inset: 2px;
+    background: linear-gradient(180deg, #2a2a2a 0%, #1a1a1a 40%, #222 60%, #111 100%);
+    clip-path: polygon(12px 0%, calc(100% - 12px) 0%, 100% 50%, calc(100% - 12px) 100%, 12px 100%, 0% 50%);
+    z-index: 1;
+  }
+
+  /* Badge Shimmer Animation */
+  .premium-badge::after {
+    content: '';
+    position: absolute;
+    top: 0; left: -100%; width: 50%; height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+    transform: skewX(-20deg);
+    z-index: 3;
+    animation: shimmer 4s infinite;
+  }
+
+  @keyframes shimmer {
+    0%, 60% { left: -100%; }
+    100% { left: 200%; }
+  }
+
+  .badge-diamond {
+    position: relative;
+    z-index: 2;
+    width: 14px;
+    height: 14px;
+    margin-right: 8px;
+    flex-shrink: 0;
+    filter: drop-shadow(0 0 3px rgba(100, 200, 255, 0.5));
+  }
+
+  .badge-text {
+    position: relative;
+    z-index: 2;
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700;
+    font-size: 13px;
+    letter-spacing: 2.5px;
+    color: #e0e0e0;
+    text-shadow: 0 2px 2px rgba(0,0,0,1);
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  /* === BUTTON STACK === */
+  .button-stack {
+    position: absolute;
+    top: 195px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    align-items: center;
+  }
+
+  .menu-btn {
+    position: relative;
+    width: 340px;
+    height: 52px; /* Slightly taller */
+    border: none;
+    cursor: pointer;
+    border-radius: 6px;
+    background: transparent;
+    transition: transform 0.1s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  
+  .menu-btn:hover { transform: scale(1.02); }
+  .menu-btn:active { transform: scale(0.97); }
+
+  /* Chrome frame (Universal) */
+  .menu-btn::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 6px;
+    background: linear-gradient(180deg, var(--chrome-light) 0%, var(--chrome-mid) 15%, var(--chrome-dark) 85%, #111 100%);
+    box-shadow: 0 6px 12px rgba(0,0,0,0.4);
+    z-index: 0;
+  }
+
+  /* Standard Inner (Dark Stealthy Green) */
+  .btn-inner {
+    position: absolute;
+    inset: 2px;
+    border-radius: 4px;
+    background: linear-gradient(180deg, #1c2b1c 0%, #111b11 40%, #0a110a 100%);
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.6);
+    z-index: 1;
+    overflow: hidden;
+    transition: filter 0.2s;
+  }
+
+  .menu-btn:hover .btn-inner { filter: brightness(1.3) contrast(1.1); }
+
+  /* Universal Specular Crescent */
+  .btn-inner::before {
+    content: '';
+    position: absolute;
+    top: 1px; left: 6px; right: 6px; height: 45%;
+    border-radius: 3px 3px 50% 50%;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.05) 40%, transparent 100%);
+    z-index: 2;
+  }
+
+  /* Hover Glass Sheen */
+  .btn-inner::after {
+    content: '';
+    position: absolute;
+    top: -50%; left: -50%; width: 200%; height: 200%;
+    background: linear-gradient(45deg, transparent 40%, rgba(255,255,255,0.05) 45%, rgba(255,255,255,0.1) 50%, transparent 55%);
+    transform: translateX(-100%);
+    transition: transform 0.5s ease;
+    z-index: 3;
+    pointer-events: none;
+  }
+  .menu-btn:hover .btn-inner::after { transform: translateX(100%); }
+
+  /* Standard Text */
+  .btn-text {
+    position: relative;
+    z-index: 4;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700;
+    font-size: 20px;
+    letter-spacing: 4px;
+    color: #b0d0b0;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+    text-transform: uppercase;
+    padding-top: 2px;
+    transition: color 0.2s, text-shadow 0.2s;
+  }
+
+  .menu-btn:hover .btn-text {
+    color: #fff;
+    text-shadow: 0 0 8px rgba(100, 255, 100, 0.4), 0 2px 4px rgba(0, 0, 0, 0.8);
+  }
+
+  /* === PRIMARY BUTTON (PLAY) OVERRIDES === */
+  .btn-primary .btn-inner {
+    background: linear-gradient(180deg, #287a28 0%, #30aa30 30%, #44dd44 50%, #30aa30 70%, #154015 100%);
+    box-shadow: inset 0 0 10px rgba(255,255,255,0.2), 0 0 20px rgba(68, 221, 68, 0.3);
+  }
+  .btn-primary::before {
+    background: linear-gradient(180deg, #fff 0%, #aaa 15%, #444 85%, #111 100%);
+  }
+  .btn-primary .btn-inner::before {
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.5) 0%, rgba(255, 255, 255, 0.15) 50%, transparent 100%);
+  }
+  .btn-primary .btn-text {
+    color: #fff;
+    font-size: 24px;
+    text-shadow: 0 2px 3px rgba(0, 40, 0, 0.9), 0 0 10px rgba(255, 255, 255, 0.4);
+  }
+  .btn-primary:hover .btn-inner { filter: brightness(1.15) contrast(1.1); box-shadow: inset 0 0 10px rgba(255,255,255,0.3), 0 0 30px rgba(68, 221, 68, 0.6); }
+
+  /* Internal glowing orb for PLAY */
+  .btn-primary .btn-inner::after {
+    content: '';
+    position: absolute;
+    bottom: -10px; left: 50%; transform: translateX(-50%);
+    width: 70%; height: 30px;
+    background: radial-gradient(ellipse, rgba(200, 255, 200, 0.6) 0%, transparent 70%);
+    z-index: 2;
+    pointer-events: none;
+    animation: glowPulseBtn 2s infinite alternate;
+  }
+
+  @keyframes glowPulseBtn {
+    from { opacity: 0.6; }
+    to { opacity: 1; }
+  }
+
+  .btn-row-split { display: flex; gap: 14px; width: 340px; }
+  .btn-half { width: calc(50% - 7px); height: 46px; }
+  .btn-half .btn-text { font-size: 15px; letter-spacing: 2px; }
+
+  /* Refined Sparkles for PLAY */
+  .sparkle-container {
+    position: absolute; right: 20px; top: 0; bottom: 0; width: 60px;
+    z-index: 5; pointer-events: none; overflow: hidden;
+  }
+  .sparkle {
+    position: absolute;
+    border-radius: 50%;
+    background: #fff;
+    box-shadow: 0 0 6px 2px rgba(150,255,150,0.8);
+    animation: floatUp 2s linear infinite;
+    opacity: 0;
+  }
+  @keyframes floatUp {
+    0% { transform: translateY(40px) scale(0.5); opacity: 0; }
+    20% { opacity: 1; }
+    80% { opacity: 1; }
+    100% { transform: translateY(-10px) scale(1.2); opacity: 0; }
+  }
+
+  /* === BOTTOM DECK === */
+  .bottom-deck {
+    position: absolute;
+    bottom: 0; left: 0; right: 0; height: 60px; z-index: 10;
+  }
+
+  .deck-bg {
+    position: absolute; inset: 0;
+    background: linear-gradient(180deg, #3a3d40 0%, #25282b 20%, #1a1c1e 100%);
+    box-shadow: 0 -4px 15px rgba(0,0,0,0.5);
+  }
+  .deck-bg::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+    background: linear-gradient(90deg, #444 0%, #888 15%, #aaa 50%, #888 85%, #444 100%);
+  }
+
+  /* Tactical Deck Buttons (Gray/Metal instead of Green) */
+  .deck-btn {
+    position: absolute;
+    bottom: 8px;
+    height: 36px;
+    border: none; cursor: pointer; border-radius: 4px; background: transparent;
+    transition: transform 0.1s;
+  }
+  .deck-btn:hover { transform: scale(1.04); }
+  
+  .deck-btn::before {
+    content: ''; position: absolute; inset: 0; border-radius: 4px;
+    background: linear-gradient(180deg, #ccc 0%, #777 20%, #333 80%, #111 100%);
+    box-shadow: 0 4px 6px rgba(0,0,0,0.5);
+  }
+
+  .deck-btn .btn-inner {
+    inset: 2px; border-radius: 2px;
+    background: linear-gradient(180deg, #333 0%, #222 50%, #151515 100%);
+  }
+  
+  .deck-btn .btn-inner::before {
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.02) 40%, transparent 100%);
+  }
+
+  .deck-btn .btn-text {
+    font-size: 13px; letter-spacing: 1.5px; color: #bbb; text-transform: uppercase;
+  }
+  .deck-btn:hover .btn-text { color: #fff; text-shadow: 0 0 5px rgba(255,255,255,0.3); }
+
+  .deck-btn-left { left: 28px; width: 140px; }
+  .deck-btn-center { left: 50%; transform: translateX(-50%); width: 200px; }
+  .deck-btn-center:hover { transform: translateX(-50%) scale(1.04); }
+
+  /* More Games Link */
+  .more-games {
+    position: absolute; right: 30px; bottom: 18px; z-index: 5;
+    font-family: 'Rajdhani', sans-serif; font-weight: 700; font-size: 16px;
+    color: #aaa; letter-spacing: 2px; text-transform: uppercase;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.8);
+    cursor: pointer; transition: color 0.2s, transform 0.2s, text-shadow 0.2s;
+  }
+  .more-games:hover { color: #fff; transform: translateY(-1px); text-shadow: 0 0 8px rgba(255,255,255,0.4), 0 2px 4px rgba(0,0,0,0.8); }
+
+  /* Sharpened Deck Dividers */
+  .deck-divider {
+    position: absolute; bottom: 0; width: 40px; height: 60px; z-index: 2; pointer-events: none;
+  }
+  .deck-divider-left {
+    left: 185px; background: linear-gradient(135deg, transparent 44%, #1a1c1e 45%, #4a4d50 46%, #2a2d30 54%, #111 55%, transparent 56%);
+  }
+  .deck-divider-right {
+    right: 230px; background: linear-gradient(45deg, transparent 44%, #1a1c1e 45%, #4a4d50 46%, #2a2d30 54%, #111 55%, transparent 56%);
+  }
+
+  .deck-plateau-right {
+    position: absolute; right: 0; bottom: 0; width: 210px; height: 60px; z-index: 1;
+    background: linear-gradient(180deg, #3a3d40 0%, #25282b 60%, #1a1c1e 100%);
+    clip-path: polygon(15% 0, 100% 0, 100% 100%, 0 100%);
+  }
+  .deck-plateau-right::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+    background: linear-gradient(90deg, transparent 15%, #888 20%, #666 100%);
+  }
+
+  /* === UNITY GAME INTEGRATION === */
+  #gameContainer {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    background: #0a1118;
+    z-index: 0;
+  }
+  #gameContainer canvas {
+    width: 100% !important;
+    height: 100% !important;
+    display: block;
+    visibility: hidden;
+  }
+  #gameContainer.canvas-visible canvas {
+    visibility: visible;
+  }
+
+  /* Menu overlay sits above game; dismissed when PLAY is clicked */
+  #menu-overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 10;
+    background: #0a1118;
+    transition: opacity 0.5s ease;
+  }
+  #menu-overlay.hidden {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  /* Expand button persists above overlay at z-index 15 */
+  .panel-topright {
+    z-index: 15;
+  }
+
+  /* Loading bar styles — rendered by UnityProgress.js inside #gameContainer */
+  .loading-overlay {
+    position: absolute !important;
+    inset: 0;
+    z-index: 50;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: opacity 280ms ease;
+    background: #0a1118;
+  }
+  .loading-overlay.is-hidden { opacity: 0; pointer-events: none; }
+  .loading-card {
+    width: min(380px, 88%);
+    border: 2px solid #a3ffb3;
+    border-radius: 8px;
+    padding: 28px 24px;
+    background: rgba(5, 9, 14, 0.96);
+    box-shadow: 0 0 30px rgba(34,197,94,0.35), 0 0 60px rgba(34,197,94,0.12), inset 0 0 40px rgba(0,40,0,0.5);
+  }
+  .loading-title {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 1.4rem;
+    font-weight: 900;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: #39ff14;
+    text-shadow: 0 0 10px #39ff14, 0 0 24px #22c55e;
+    margin-bottom: 4px;
+  }
+  .loading-subtitle {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: rgba(200,255,180,0.70);
+    margin-bottom: 20px;
+  }
+  .loading-track {
+    width: 100%; height: 10px;
+    border-radius: 3px;
+    overflow: hidden;
+    background: rgba(0,40,0,0.80);
+    border: 1px solid rgba(34,197,94,0.25);
+  }
+  .loading-fill {
+    width: 0; height: 100%;
+    border-radius: inherit;
+    background: linear-gradient(90deg, #16a34a, #39ff14);
+    box-shadow: 0 0 14px rgba(57,255,20,0.7);
+    transition: width 120ms linear;
+  }
+  .loading-percent {
+    margin-top: 8px;
+    text-align: right;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: rgba(200,255,180,0.70);
+  }
+
+  /* === MODAL === */
+  #modal-overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 100;
+    background: rgba(0, 0, 0, 0.75);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(4px);
+  }
+  #modal-overlay.visible {
+    display: flex;
+  }
+  #modal-box {
+    width: min(420px, 88%);
+    background: linear-gradient(180deg, #1a1e20 0%, #0f1215 100%);
+    border: 1px solid rgba(68, 255, 68, 0.3);
+    border-radius: 6px;
+    padding: 32px 28px 24px;
+    box-shadow: 0 0 40px rgba(0, 0, 0, 0.8), 0 0 20px rgba(68, 255, 68, 0.1);
+    text-align: center;
+  }
+  #modal-title {
+    font-family: 'Orbitron', sans-serif;
+    font-weight: 900;
+    font-size: 1.4rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #44ff44;
+    text-shadow: 0 0 10px rgba(68, 255, 68, 0.5);
+    margin-bottom: 14px;
+  }
+  #modal-body {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 1.1rem;
+    font-weight: 500;
+    color: #b0d0b0;
+    letter-spacing: 0.05em;
+    margin-bottom: 24px;
+    line-height: 1.6;
+  }
+  #modal-body a { color: #44ff44; }
+  #modal-close {
+    position: relative;
+    width: 160px;
+    height: 44px;
+    border: none;
+    cursor: pointer;
+    border-radius: 6px;
+    background: transparent;
+    margin: 0 auto;
+    display: block;
+    transition: transform 0.1s;
+  }
+  #modal-close:hover { transform: scale(1.04); }
+  #modal-close::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 6px;
+    background: linear-gradient(180deg, var(--chrome-light) 0%, var(--chrome-mid) 15%, var(--chrome-dark) 85%, #111 100%);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+  }
+  #modal-close .btn-inner {
+    position: absolute;
+    inset: 2px;
+    border-radius: 4px;
+    background: linear-gradient(180deg, #1c2b1c 0%, #111b11 40%, #0a110a 100%);
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.6);
+  }
+  #modal-close .btn-text {
+    position: relative;
+    z-index: 4;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700;
+    font-size: 16px;
+    letter-spacing: 3px;
+    color: #b0d0b0;
+    text-transform: uppercase;
+  }
+  #modal-close:hover .btn-text { color: #fff; text-shadow: 0 0 6px rgba(100, 255, 100, 0.4); }
+
+</style>
 </head>
+<body>
 
-<!--- 
-Want to run or host yourself? Check out the source? 
-https://github.com/cgolden15/Slope-Game/ 
+<div class="game-container">
+  <!-- Unity game canvas — always present behind everything -->
+  <div id="gameContainer"></div>
 
-Drop a star on the repo if you enjoy.
---->
+  <!-- CRT scanlines — always on top, pointer-events: none -->
+  <div class="scanlines"></div>
 
-<body style="margin: 0; overflow: hidden;">
-    <div class="alert">
-        <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
-        Want to play tetris? <a href="https://goldenn.dev/tetris/">Click here!</a> REMOVE ADS by clicking the white arrow below them!
+  <!-- Expand / Fullscreen button — always accessible, outside menu overlay -->
+  <div class="panel-topright" id="expandBtn" tabindex="0" role="button" aria-label="Enter fullscreen">
+    <svg width="190" height="48" viewBox="0 0 190 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M190 0 H35 L0 0 L35 48 H190 Z" fill="url(#gunmetal-r)" />
+      <path d="M190 46 H40 L35 48 H190 Z" fill="rgba(255,255,255,0.15)" />
+      <path d="M37 48 L2 0 L0 0 L35 48 Z" fill="rgba(255,255,255,0.1)" />
+      <g stroke="#e0e0e0" stroke-width="2" fill="none" stroke-linecap="square">
+        <polyline points="95,16 95,12 99,12" />
+        <polyline points="112,12 116,12 116,16" />
+        <polyline points="116,26 116,30 112,30" />
+        <polyline points="99,30 95,30 95,26" />
+      </g>
+      <text id="expandLabel" x="125" y="25" fill="#e0e0e0" font-family="Rajdhani, sans-serif" font-size="14" font-weight="700" letter-spacing="2">Expand</text>
+      <defs>
+        <linearGradient id="gunmetal-r" x1="190" y1="0" x2="30" y2="48">
+          <stop offset="0%" stop-color="#4a4d50" />
+          <stop offset="40%" stop-color="#2a2d30" />
+          <stop offset="100%" stop-color="#1a1c1e" />
+        </linearGradient>
+      </defs>
+    </svg>
+  </div>
+
+  <!-- Menu overlay — dismissed when PLAY is clicked -->
+  <div id="menu-overlay">
+
+  <!-- Background layers -->
+  <div class="bg-texture"></div>
+  <div class="grid-overlay"></div>
+  <div class="grid-glow-lines"></div>
+  
+  <div class="flare-wrapper">
+    <div class="flare-left"></div>
+    <div class="flare-right"></div>
+  </div>
+  <div class="flare-band-left"></div>
+  <div class="flare-band-right"></div>
+  
+  <div class="vignette"></div>
+
+  <!-- Top-Left Guest Panel -->
+  <div class="panel-topleft" id="panel-guest" tabindex="0">
+    <svg width="190" height="48" viewBox="0 0 190 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M0 0 H155 L190 0 L155 48 H0 Z" fill="url(#gunmetal-l)" />
+      <path d="M0 46 H150 L155 48 H0 Z" fill="rgba(255,255,255,0.15)" />
+      <path d="M153 48 L188 0 L190 0 L155 48 Z" fill="rgba(255,255,255,0.1)" />
+      <circle cx="28" cy="22" r="16" fill="#151719" stroke="#555" stroke-width="2" />
+      <circle cx="28" cy="17" r="5.5" fill="#888" />
+      <path d="M17 34 Q17 26 28 26 Q39 26 39 34" fill="#888" />
+      <text x="56" y="29" fill="#e0e0e0" font-family="Rajdhani, sans-serif" font-size="18" font-weight="700" letter-spacing="4">GUEST</text>
+      <defs>
+        <linearGradient id="gunmetal-l" x1="0" y1="0" x2="160" y2="48">
+          <stop offset="0%" stop-color="#4a4d50" />
+          <stop offset="40%" stop-color="#2a2d30" />
+          <stop offset="100%" stop-color="#1a1c1e" />
+        </linearGradient>
+      </defs>
+    </svg>
+  </div>
+
+  <!-- Title Area -->
+  <div class="title-area">
+    <div class="title-glow"></div>
+    <div class="slope-title">SLOPE</div>
+    <div class="premium-badge">
+      <!-- Crystalline Diamond SVG -->
+      <svg class="badge-diamond" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <polygon points="10,0 18,7 10,20 2,7" fill="#88bbdd" />
+        <polygon points="10,0 14,7 10,20" fill="#aaddff" />
+        <polygon points="10,0 6,7 2,7" fill="#eeffff" />
+        <polygon points="10,0 14,7 18,7" fill="#5588aa" />
+        <polygon points="6,7 10,20 2,7" fill="#335577" />
+        <polygon points="10,6 13,8 10,17 7,8" fill="rgba(255,255,255,0.5)" />
+      </svg>
+      <span class="badge-text">PREMIUM EDITION</span>
     </div>
-    <div class="webgl-content">
-        <div id="gameContainer" style="width: 100%; height: 100%; margin: 0;"></div>
+  </div>
+
+  <!-- Button Stack -->
+  <div class="button-stack">
+    <!-- PLAY (Primary highlighted button) -->
+    <button class="menu-btn btn-primary" type="button">
+      <div class="btn-inner"></div>
+      <div class="btn-text">PLAY</div>
+      <!-- Programmatic CSS Sparkles -->
+      <div class="sparkle-container">
+        <div class="sparkle" style="width: 4px; height: 4px; left: 10px; animation-delay: 0s; animation-duration: 2.5s;"></div>
+        <div class="sparkle" style="width: 6px; height: 6px; left: 30px; animation-delay: 0.8s; animation-duration: 1.8s;"></div>
+        <div class="sparkle" style="width: 3px; height: 3px; left: 45px; animation-delay: 1.5s; animation-duration: 2s;"></div>
+        <div class="sparkle" style="width: 5px; height: 5px; left: 20px; animation-delay: 2.1s; animation-duration: 2.2s;"></div>
+      </div>
+    </button>
+
+    <!-- LOGIN (Secondary Stealth Button) -->
+    <button class="menu-btn" id="btn-login" type="button">
+      <div class="btn-inner"></div>
+      <div class="btn-text">LOGIN</div>
+    </button>
+
+    <!-- LEADERBOARD / CREDITS -->
+    <div class="btn-row-split">
+      <button class="menu-btn btn-half" id="btn-leaderboard" type="button">
+        <div class="btn-inner"></div>
+        <div class="btn-text">LEADERBOARD</div>
+      </button>
+      <button class="menu-btn btn-half" id="btn-credits" type="button">
+        <div class="btn-inner"></div>
+        <div class="btn-text">CREDITS</div>
+      </button>
     </div>
-    <!-- <a title="GDPR-compliant Web Analytics" href="https://clicky.com/101393847"><img alt="Clicky" src="//static.getclicky.com/media/links/badge.gif" border="0" /></a> -->
-    <script async src="//static.getclicky.com/101393847.js"></script>
-    <noscript><p><img alt="Clicky" width="1" height="1" src="//in.getclicky.com/101393847ns.gif" /></p></noscript>
+
+    <!-- SETTINGS -->
+    <button class="menu-btn" id="btn-settings" type="button">
+      <div class="btn-inner"></div>
+      <div class="btn-text">SETTINGS</div>
+    </button>
+  </div>
+
+  <!-- Bottom Deck -->
+  <div class="bottom-deck">
+    <div class="deck-bg"></div>
+    <div class="deck-divider deck-divider-left"></div>
+    <div class="deck-divider deck-divider-right"></div>
+    <div class="deck-plateau-right"></div>
+
+    <!-- Feedback button -->
+    <button class="deck-btn deck-btn-left" id="btn-feedback" type="button">
+      <div class="btn-inner"></div>
+      <div class="btn-text">Feedback</div>
+    </button>
+
+    <!-- Download button -->
+    <button class="deck-btn deck-btn-center" id="btn-download" type="button">
+      <div class="btn-inner"></div>
+      <div class="btn-text">Download App</div>
+    </button>
+
+    <!-- More Games -->
+    <div class="more-games" id="btn-more-games" tabindex="0">More Games</div>
+  </div>
+
+  </div><!-- /#menu-overlay -->
+
+  <!-- Modal Dialog -->
+  <div id="modal-overlay" role="dialog" aria-modal="true" aria-hidden="true">
+    <div id="modal-box">
+      <div id="modal-title"></div>
+      <div id="modal-body"></div>
+      <button id="modal-close" type="button"><div class="btn-inner"></div><div class="btn-text">CLOSE</div></button>
+    </div>
+  </div>
+
+</div><!-- /.game-container -->
+
+<script src="TemplateData/UnityProgress.js"></script>
+<script src="TemplateData/unityloader41.js"></script>
+<script>
+  // ── Unity initialisation ────────────────────────────────────────────────
+  var gameInstance = UnityLoader.instantiate('gameContainer', 'Build/slope.json', {
+    onProgress: UnityProgress,
+    Module: { onRuntimeInitialized: function () { UnityProgress(gameInstance, 'complete'); } }
+  });
+
+  // ── Modal helper ─────────────────────────────────────────────────────────
+  function showModal(title, body) {
+    document.getElementById('modal-title').textContent = title;
+    document.getElementById('modal-body').innerHTML = body;
+    var mo = document.getElementById('modal-overlay');
+    mo.classList.add('visible');
+    mo.setAttribute('aria-hidden', 'false');
+  }
+  function closeModal() {
+    var mo = document.getElementById('modal-overlay');
+    mo.classList.remove('visible');
+    mo.setAttribute('aria-hidden', 'true');
+  }
+  document.getElementById('modal-close').addEventListener('click', closeModal);
+  document.getElementById('modal-overlay').addEventListener('click', function (e) {
+    if (e.target === this) closeModal();
+  });
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') closeModal();
+  });
+
+  // ── PLAY → dismiss menu overlay, reveal canvas, start game ────────────
+  document.querySelector('.btn-primary').addEventListener('click', function () {
+    document.getElementById('menu-overlay').classList.add('hidden');
+    document.getElementById('gameContainer').classList.add('canvas-visible');
+    var canvas = document.querySelector('#gameContainer canvas');
+    if (canvas) {
+      canvas.focus();
+      // Simulate a click at the canvas center to trigger Unity's internal play button
+      setTimeout(function () {
+        var rect = canvas.getBoundingClientRect();
+        var cx = rect.left + rect.width  / 2;
+        var cy = rect.top  + rect.height / 2;
+        ['mousedown', 'mouseup', 'click'].forEach(function (type) {
+          canvas.dispatchEvent(new MouseEvent(type, {
+            bubbles: true, cancelable: true, view: window,
+            clientX: cx, clientY: cy, button: 0
+          }));
+        });
+      }, 150);
+    }
+  });
+
+  // ── Button wiring ─────────────────────────────────────────────────────────
+
+  // Helper: dismiss HTML overlay and hand focus to the game canvas
+  function enterGame() {
+    document.getElementById('menu-overlay').classList.add('hidden');
+    document.getElementById('gameContainer').classList.add('canvas-visible');
+    var canvas = document.querySelector('#gameContainer canvas');
+    if (canvas) canvas.focus();
+  }
+
+  // Guest panel — informational
+  document.getElementById('panel-guest').addEventListener('click', function () {
+    showModal('GUEST MODE', 'You are playing as a guest.<br>Login to save your progress and compete on leaderboards.');
+  });
+  document.getElementById('panel-guest').addEventListener('keydown', function (e) {
+    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); this.click(); }
+  });
+
+  // LOGIN — dismiss overlay, then call Unity ID.net login
+  document.getElementById('btn-login').addEventListener('click', function () {
+    enterGame();
+    try { gameInstance.SendMessage('IdnetSample', 'Login'); } catch(e) { console.log('Login SendMessage:', e); }
+  });
+
+  // LEADERBOARD — dismiss overlay, then show in-game leaderboard
+  document.getElementById('btn-leaderboard').addEventListener('click', function () {
+    enterGame();
+    try { gameInstance.SendMessage('Leaderboard', 'Show'); } catch(e) { console.log('Leaderboard SendMessage:', e); }
+  });
+
+  // CREDITS — dismiss overlay, then show in-game promo/credits screen
+  document.getElementById('btn-credits').addEventListener('click', function () {
+    enterGame();
+    try { gameInstance.SendMessage('Canvas', 'ShowPromoScreen'); } catch(e) { console.log('Credits SendMessage:', e); }
+  });
+
+  // SETTINGS — toggle game sound via in-game SoundButton
+  (function () {
+    var soundOn = true;
+    document.getElementById('btn-settings').addEventListener('click', function () {
+      soundOn = !soundOn;
+      try { gameInstance.SendMessage('SoundButton', 'ToggleSound'); } catch(e) { console.log('Sound SendMessage:', e); }
+      showModal('SETTINGS', 'Sound: <strong>' + (soundOn ? 'ON 🔊' : 'OFF 🔇') + '</strong><br><br>Click SETTINGS again to toggle.');
+    });
+  }());
+
+  // Feedback — open feedback email directly
+  document.getElementById('btn-feedback').addEventListener('click', function () {
+    window.location.href = 'mailto:feedback@slope.game';
+  });
+
+  // Download App — use Unity WebUtils bridge with fallback
+  document.getElementById('btn-download').addEventListener('click', function () {
+    try {
+      gameInstance.SendMessage('Utils', 'OpenNewWindow', 'https://slope.game/app');
+    } catch(e) {
+      window.open('https://slope.game/app', '_blank', 'noopener,noreferrer');
+    }
+  });
+
+  // More Games — use Unity WebUtils bridge with fallback
+  document.getElementById('btn-more-games').addEventListener('click', function () {
+    try {
+      gameInstance.SendMessage('Utils', 'OpenNewWindow', 'https://slope.game');
+    } catch(e) {
+      window.open('https://slope.game', '_blank', 'noopener,noreferrer');
+    }
+  });
+  document.getElementById('btn-more-games').addEventListener('keydown', function (e) {
+    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); this.click(); }
+  });
+
+  // ── Expand / Fullscreen toggle ────────────────────────────────────────────
+  (function () {
+    var btn = document.getElementById('expandBtn');
+    var lbl = document.getElementById('expandLabel');
+    var gc  = document.querySelector('.game-container');
+
+    function updateLabel() {
+      lbl.textContent = document.fullscreenElement ? 'Exit' : 'Expand';
+      btn.setAttribute('aria-label', document.fullscreenElement ? 'Exit fullscreen' : 'Enter fullscreen');
+    }
+
+    btn.addEventListener('click', function () {
+      if (!document.fullscreenElement) {
+        gc.requestFullscreen && gc.requestFullscreen();
+      } else {
+        document.exitFullscreen && document.exitFullscreen();
+      }
+    });
+
+    btn.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); btn.click(); }
+    });
+
+    document.addEventListener('fullscreenchange', updateLabel);
+  }());
+</script>
+
 </body>
-<!-- Slope game by y8 games, not me.-->
+</html>

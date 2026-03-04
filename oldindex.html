@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Slope™: Premium Edition</title>
+  <link rel="stylesheet" href="TemplateData/style.css">
+  <script src="TemplateData/UnityProgress.js"></script>
+  <script src="TemplateData/unityloader41.js"></script>
+</head>
+<body>
+
+  <!-- background layers -->
+  <div class="bg-dots"></div>
+  <div class="bg-grid"></div>
+  <div class="bg-vignette"></div>
+  <div class="laser laser-top"></div>
+  <div class="laser laser-bottom"></div>
+
+  <!-- shared SVG gradient defs -->
+  <svg class="svg-defs" aria-hidden="true">
+    <defs>
+      <linearGradient id="metalBase" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%"   stop-color="#475569"/>
+        <stop offset="30%"  stop-color="#334155"/>
+        <stop offset="100%" stop-color="#1e293b"/>
+      </linearGradient>
+      <linearGradient id="metalEdge" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%"   stop-color="#cbd5e1"/>
+        <stop offset="50%"  stop-color="#94a3b8"/>
+        <stop offset="100%" stop-color="#64748b"/>
+      </linearGradient>
+    </defs>
+  </svg>
+
+  <!-- game canvas fills entire viewport; everything else overlays it -->
+  <div id="gameContainer"></div>
+
+  <!-- top-left: Guest trapezoid panel -->
+  <div class="panel-guest">
+    <svg class="panel-svg" viewBox="0 0 256 64" preserveAspectRatio="none" aria-hidden="true">
+      <path d="M 0 0 L 256 0 L 220 64 L 0 64 Z"
+            fill="url(#metalBase)" stroke="url(#metalEdge)"
+            stroke-width="3" vector-effect="non-scaling-stroke"/>
+    </svg>
+    <div class="panel-guest-inner">
+      <div class="guest-icon">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none"
+             stroke="#94a3b8" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="8" r="4"/>
+          <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
+        </svg>
+      </div>
+      <span class="guest-label">GUEST</span>
+    </div>
+  </div>
+
+  <!-- top-right: Fullscreen trapezoid panel -->
+  <button class="panel-fullscreen" id="fsBtn" aria-label="Enter fullscreen">
+    <svg class="panel-svg" viewBox="0 0 192 48" preserveAspectRatio="none" aria-hidden="true">
+      <path d="M 192 0 L 0 0 L 24 48 L 192 48 Z"
+            fill="url(#metalBase)" stroke="url(#metalEdge)"
+            stroke-width="3" vector-effect="non-scaling-stroke"/>
+    </svg>
+    <div class="panel-fs-inner">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none"
+           stroke="#cbd5e1" stroke-width="2" stroke-linecap="round">
+        <path d="M8 3H5a2 2 0 00-2 2v3m18 0V5a2 2 0 00-2-2h-3m0 18h3a2 2 0 002-2v-3M3 16v3a2 2 0 002 2h3"/>
+      </svg>
+      <span id="fsLabel">Fullscreen</span>
+    </div>
+  </button>
+
+  <!-- bottom metallic shelf -->
+  <div class="bottom-shelf">
+    <svg class="shelf-svg" viewBox="0 0 1000 88" preserveAspectRatio="none" aria-hidden="true">
+      <path d="M 0 35 L 300 35 L 320 65 L 680 65 L 700 35 L 1000 35 L 1000 88 L 0 88 Z"
+            fill="url(#metalBase)" stroke="url(#metalEdge)"
+            stroke-width="2.5" vector-effect="non-scaling-stroke"/>
+      <path d="M 0 38 L 298 38 L 318 68 L 682 68 L 702 38 L 1000 38"
+            fill="none" stroke="#1e293b" stroke-width="3"
+            vector-effect="non-scaling-stroke" opacity="0.6"/>
+    </svg>
+    <div class="shelf-content">
+      <div class="shelf-left">
+        <button class="glass-btn">Feedback</button>
+      </div>
+      <div class="shelf-center">
+        <button class="glass-btn">Download</button>
+      </div>
+      <div class="shelf-right">
+        <span class="more-games-label">More Games</span>
+        <svg width="22" height="22" viewBox="0 0 24 24" style="filter:drop-shadow(0 0 6px rgba(255,255,255,0.55))">
+          <path d="M12 2 L14.5 9.5 L22 12 L14.5 14.5 L12 22 L9.5 14.5 L2 12 L9.5 9.5 Z" fill="#e2e8f0"/>
+        </svg>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    var gameInstance = UnityLoader.instantiate("gameContainer", "Build/slope.json", {
+      onProgress: UnityProgress,
+      Module: { onRuntimeInitialized: function () { UnityProgress(gameInstance, "complete"); } }
+    });
+    (function () {
+      var btn = document.getElementById("fsBtn");
+      var lbl = document.getElementById("fsLabel");
+      var gc  = document.getElementById("gameContainer");
+      function upd() {
+        var fs = !!document.fullscreenElement;
+        lbl.textContent = fs ? "Exit Fullscreen" : "Fullscreen";
+        btn.setAttribute("aria-label", fs ? "Exit fullscreen" : "Enter fullscreen");
+      }
+      btn.addEventListener("click", function () {
+        if (!document.fullscreenElement) { gc.requestFullscreen && gc.requestFullscreen(); }
+        else { document.exitFullscreen && document.exitFullscreen(); }
+      });
+      document.addEventListener("fullscreenchange", upd);
+      upd();
+    }());
+  </script>
+</body>
+</html>

@@ -1,0 +1,20 @@
+<linker>
+	<assembly fullname="Assembly-CSharp">
+		<type fullname="WebUtils">
+			<method name="OpenNewWindow"/>
+			<method name="OpenNewWindow"/>
+			<method name="OpenY8MenuLogoLink"/>
+			<method name="OpenNewWindow"/>
+			<method name="OpenNewWindow"/>
+			<method name="OpenNewWindow"/>
+			<method name="OpenNewWindow"/>
+			<method name="OpenNewWindow"/>
+			<method name="OpenNewWindow"/>
+			<method name="OpenNewWindow"/>
+		</type>
+		<type fullname="CanvasScripts">
+			<method name="ShowPromoScreen"/>
+			<method name="PromoScreen_BackToMenu"/>
+		</type>
+	</assembly>
+</linker>
